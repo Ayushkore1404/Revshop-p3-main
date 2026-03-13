@@ -4,11 +4,11 @@ import com.revshop.dto.ProductDTO;
 import com.revshop.model.Product;
 import com.revshop.model.User;
 import com.revshop.repository.ProductRepository;
+import com.revshop.util.ProductCategoryUtil;
 import com.revshop.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,23 +30,7 @@ public class ProductService {
      * Safe serialization without lazy loading issues
      */
     private ProductDTO convertToDTO(Product product) {
-        ProductDTO dto = new ProductDTO();
-        dto.setId(product.getId());
-        dto.setName(product.getName());
-        dto.setDescription(product.getDescription());
-        dto.setPrice(product.getPrice());
-        dto.setStock(product.getStock());
-        dto.setCategory(product.getCategory());
-        dto.setImageUrl(product.getImageUrl());
-        dto.setLowStockThreshold(product.getLowStockThreshold());
-        
-        // Safe seller information extraction
-        if (product.getSeller() != null) {
-            dto.setSellerId(product.getSeller().getId());
-            dto.setSellerName(product.getSeller().getName());
-        }
-        
-        return dto;
+        return ProductCategoryUtil.convertToDTO(product);
     }
 
     /**
@@ -137,14 +121,7 @@ public class ProductService {
      */
     public ProductDTO addProductDTO(ProductDTO productDTO) {
         try {
-            Product product = new Product();
-            product.setName(productDTO.getName());
-            product.setDescription(productDTO.getDescription());
-            product.setPrice(productDTO.getPrice());
-            product.setStock(productDTO.getStock());
-            product.setCategory(productDTO.getCategory());
-            product.setImageUrl(productDTO.getImageUrl());
-            product.setLowStockThreshold(productDTO.getLowStockThreshold());
+            Product product = ProductCategoryUtil.convertToEntity(productDTO);
             
             // Set seller if provided
             if (productDTO.getSellerId() != null) {
@@ -169,16 +146,18 @@ public class ProductService {
             Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
             
-            existingProduct.setName(productDTO.getName());
-            existingProduct.setDescription(productDTO.getDescription());
-            existingProduct.setPrice(productDTO.getPrice());
-            existingProduct.setStock(productDTO.getStock());
-            existingProduct.setCategory(productDTO.getCategory());
-            existingProduct.setImageUrl(productDTO.getImageUrl());
-            existingProduct.setLowStockThreshold(productDTO.getLowStockThreshold());
+            // Use utility to update fields
+            Product updatedProduct = ProductCategoryUtil.convertToEntity(productDTO);
+            existingProduct.setName(updatedProduct.getName());
+            existingProduct.setDescription(updatedProduct.getDescription());
+            existingProduct.setPrice(updatedProduct.getPrice());
+            existingProduct.setStock(updatedProduct.getStock());
+            existingProduct.setCategory(updatedProduct.getCategory());
+            existingProduct.setImageUrl(updatedProduct.getImageUrl());
+            existingProduct.setLowStockThreshold(updatedProduct.getLowStockThreshold());
             
-            Product updatedProduct = productRepository.save(existingProduct);
-            return convertToDTO(updatedProduct);
+            Product savedProduct = productRepository.save(existingProduct);
+            return convertToDTO(savedProduct);
         } catch (Exception e) {
             System.err.println("❌ Error in updateProduct: " + e.getMessage());
             e.printStackTrace();

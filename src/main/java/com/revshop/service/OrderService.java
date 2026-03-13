@@ -35,7 +35,15 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderHistoryDTO> getOrdersByBuyer(Long buyerId) {
-        return orderRepository.findOrderHistoryByBuyer(buyerId);
+        System.out.println("🔍 === ORDER SERVICE GET ORDERS BY BUYER ===");
+        System.out.println("👤 Buyer ID: " + buyerId);
+        System.out.println("👤 Buyer ID type: " + (buyerId != null ? "Long" : "null"));
+        System.out.println("👤 Buyer ID value: " + buyerId);
+        
+        List<OrderHistoryDTO> orders = orderRepository.findOrderHistoryByBuyer(buyerId);
+        System.out.println("📊 Repository returned: " + (orders != null ? orders.size() + " orders" : "null"));
+        
+        return orders;
     }
 
     @Transactional(readOnly = true)

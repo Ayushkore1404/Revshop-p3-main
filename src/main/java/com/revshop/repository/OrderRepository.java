@@ -20,7 +20,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             o.totalAmount,
             o.status,
             o.orderDate,
-            o.orderNumber
+            o.orderNumber,
+            o.shippingAddress,
+            o.shippingCity,
+            o.shippingState,
+            o.shippingZipCode,
+            o.shippingCountry,
+            o.shippingPhone
         )
         FROM Order o
         WHERE o.buyer.id = :buyerId

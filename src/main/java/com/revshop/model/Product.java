@@ -2,6 +2,7 @@ package com.revshop.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.revshop.enums.ProductCategory;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
@@ -27,8 +28,9 @@ public class Product {
     @Column(name = "stock", nullable = false)
     private Integer stock;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
-    private String category;
+    private ProductCategory category;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -47,7 +49,7 @@ public class Product {
 
     // Constructor with required fields
     public Product(String name, String description, BigDecimal price, Integer stock, 
-                   String category, User seller) {
+                   ProductCategory category, User seller) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -72,8 +74,8 @@ public class Product {
     public Integer getStock() { return stock; }
     public void setStock(Integer stock) { this.stock = stock; }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public ProductCategory getCategory() { return category; }
+    public void setCategory(ProductCategory category) { this.category = category; }
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }

@@ -195,17 +195,10 @@ public class ProductController {
             }
 
             // Validate category
-            if (product.getCategory() == null || product.getCategory().trim().isEmpty()) {
+            if (product.getCategory() == null) {
                 return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
                     "message", "Product category is required. Please select a category for your product."
-                ));
-            }
-
-            if (product.getCategory().trim().length() > 50) {
-                return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", "Category name is too long. Maximum 50 characters allowed."
                 ));
             }
 
@@ -239,7 +232,6 @@ public class ProductController {
             productDTO.setDescription(product.getDescription());
             productDTO.setPrice(product.getPrice());
             productDTO.setStock(product.getStock());
-            productDTO.setCategory(product.getCategory());
             productDTO.setImageUrl(product.getImageUrl());
             productDTO.setSellerId(product.getSellerId());
             
@@ -278,7 +270,6 @@ public class ProductController {
             productDTO.setDescription(product.getDescription());
             productDTO.setPrice(product.getPrice());
             productDTO.setStock(product.getStock());
-            productDTO.setCategory(product.getCategory());
             productDTO.setImageUrl(product.getImageUrl());
             productDTO.setSellerId(product.getSellerId());
             

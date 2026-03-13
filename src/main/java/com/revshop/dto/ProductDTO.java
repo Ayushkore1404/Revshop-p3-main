@@ -1,6 +1,7 @@
 package com.revshop.dto;
 
 import java.math.BigDecimal;
+import com.revshop.enums.ProductCategory;
 
 /**
  * Data Transfer Object for Product entity
@@ -12,11 +13,12 @@ public class ProductDTO {
     private String description;
     private BigDecimal price;
     private Integer stock;
-    private String category;
+    private String category; // Keep as String for frontend compatibility
     private String imageUrl;
     private Integer lowStockThreshold;
     private Long sellerId;
     private String sellerName; // Additional field for UI convenience
+    private String categoryDisplayName; // Display name for UI
 
     // Default constructor
     public ProductDTO() {}
@@ -67,4 +69,18 @@ public class ProductDTO {
 
     public String getSellerName() { return sellerName; }
     public void setSellerName(String sellerName) { this.sellerName = sellerName; }
+
+    public String getCategoryDisplayName() { return categoryDisplayName; }
+    public void setCategoryDisplayName(String categoryDisplayName) { this.categoryDisplayName = categoryDisplayName; }
+
+    // Helper method to set category from enum
+    public void setCategoryFromEnum(ProductCategory category) {
+        this.category = category != null ? category.getDbValue() : null;
+        this.categoryDisplayName = category != null ? category.getDisplayName() : null;
+    }
+
+    // Helper method to get category as enum
+    public ProductCategory getCategoryAsEnum() {
+        return ProductCategory.fromDbValue(this.category);
+    }
 }
