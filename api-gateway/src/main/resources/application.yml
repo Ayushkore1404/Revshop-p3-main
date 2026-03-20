@@ -1,0 +1,181 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+    gateway:
+      routes:
+        # User Service Routes
+        - id: user-service-auth
+          uri: lb://user-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - CircuitBreaker=user-service
+            - name=Retry
+            args:
+              retries: 3
+              statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+              methods: GET,POST
+              backoff:
+                firstBackoff: 50ms
+                maxBackoff: 500ms
+        - id: user-service-users
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - CircuitBreaker=user-service
+            - name=Retry
+            args:
+              retries: 3
+              statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+              methods: GET,POST
+              backoff:
+                firstBackoff: 50ms
+                maxBackoff: 500ms
+        - id: user-service-admin
+          uri: lb://user-service
+          predicates:
+            - Path=/api/admin/users/**
+          filters:
+            - CircuitBreaker=user-service
+            - name=Retry
+            args:
+              retries: 3
+              statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+              methods: GET,POST
+              backoff:
+                firstBackoff: 50ms
+                maxBackoff: 500ms
+            
+        # Product Service Routes
+        - id: product-service-products
+          uri: lb://product-service
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - CircuitBreaker=product-service
+            - name=Retry
+            args:
+              retries: 3
+              statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+              methods: GET,POST
+              backoff:
+                firstBackoff: 50ms
+                maxBackoff: 500ms
+        - id: product-service-reviews
+          uri: lb://product-service
+          predicates:
+            - Path=/api/reviews/**
+          filters:
+            - CircuitBreaker=product-service
+            - name=Retry
+            args:
+              retries: 3
+              statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+              methods: GET,POST
+              backoff:
+                firstBackoff: 50ms
+                maxBackoff: 500ms
+            
+        # Cart Service Routes
+        - id: cart-service
+          uri: lb://cart-service
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - CircuitBreaker=cart-service
+            - name=Retry
+            args:
+              retries: 3
+              statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+              methods: GET,POST
+              backoff:
+                firstBackoff: 50ms
+                maxBackoff: 500ms
+            
+        # Order Service Routes
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - CircuitBreaker=order-service
+            - name=Retry
+            args:
+              retries: 3
+              statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+              methods: GET,POST
+              backoff:
+                firstBackoff: 50ms
+                maxBackoff: 500ms
+            
+        # Payment Service Routes
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payments/**
+          filters:
+            - CircuitBreaker=payment-service
+            - name=Retry
+            args:
+              retries: 3
+              statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+              methods: GET,POST
+              backoff:
+                firstBackoff: 50ms
+                maxBackoff: 500ms
+            
+        # Notification Service Routes
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - CircuitBreaker=notification-service
+            - name=Retry
+            args:
+              retries: 3
+              statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+              methods: GET,POST
+              backoff:
+                firstBackoff: 50ms
+                maxBackoff: 500ms
+
+      httpclient:
+        connect-timeout: 10000  # 10 seconds
+        response-timeout: 10000 # 10 seconds
+
+# Eureka Configuration
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+
+# Logging Configuration
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web.reactive: DEBUG
+
+# JWT Configuration
+jwt:
+  secret: revshop-super-secret-key-for-jwt-2025-microservices

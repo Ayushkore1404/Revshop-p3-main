@@ -1,0 +1,10 @@
+CREATE DATABASE revshop_users_db;
+use revshop_users_db;
+select * from users;
+CREATE DATABASE  revshop_products_db;
+CREATE DATABASE IF NOT EXISTS revshop_cart_db;
+CREATE DATABASE IF NOT EXISTS revshop_orders_db;
+use revshop_orders_db;
+select * from orders_seq;
+CREATE DATABASE IF NOT EXISTS revshop_payments_db;
+CREATE DATABASE IF NOT EXISTS revshop_notifications_db;

@@ -1,0 +1,9 @@
+package com.revshop.orderservice.entity;
+
+public enum OrderStatus {
+    PENDING,
+    CONFIRMED,
+    SHIPPED,
+    DELIVERED,
+    CANCELLED
+}
